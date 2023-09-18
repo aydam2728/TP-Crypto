@@ -6,7 +6,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.time.Clock;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 public class DES extends Application {
@@ -72,6 +74,13 @@ public class DES extends Application {
                 bits[i * 8 + j] = (c >> (7 - j)) & 1;
             }
         }
+        System.out.println("bits.length = " + bits.length);
+        if (bits.length % 64 != 0) {
+            // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
+            int[] newBits = new int[bits.length % 64];
+           // System.out.println("newBits.length = " + newBits.length);
+            System.arraycopy(newBits, 0, bits, bits.length-1, bits.length);
+        }
 
         return bits;
     }
@@ -96,8 +105,21 @@ public class DES extends Application {
         return stringBuilder.toString();
     }
 
+    public int[][] decouppage(int [] bloc , int tailleBloc){
+        // découpe un tableau d’entiers bloc en un tableau de tableaux d’entiers de taille tailleBloc
+        int[][] tab = new int[bloc.length/tailleBloc][tailleBloc];
+        for (int i = 0; i < bloc.length; i++) {
+            tab[i/tailleBloc][i%tailleBloc] = bloc[i];
+        }
+        return tab;
+    }
 
     public static void main(String[] args) {
-        launch();
+        //launch();
+        DES des = new DES();
+        System.out.println( Arrays.toString(       des.stringToBits("Salut ! ")))    ;
+        System.out.println(des.stringToBits("Hello World !").length);
+        System.out.println(des.bitsToString(des.stringToBits("Hello World !")));
+        System.out.println(Arrays.deepToString(des.decouppage(des.stringToBits("Hello World !"), 8)));
     }
 }
