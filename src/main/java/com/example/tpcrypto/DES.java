@@ -32,6 +32,70 @@ public class DES extends Application {
     int[] masterkey;
     ArrayList<Integer> tab_cles = new ArrayList<Integer>();
 
+    public DES() {
+        super();
+        // create a tab with random int range 0-1 with 64 elements
+        Random rd = new Random();
+        int[] MasterKey = new int[64];
+        for (int i = 0; i < arr.length; i++) {
+            MasterKey[i] = rd.nextInt();
+        }
+        ArrayList<String> tab_cles = new ArrayList<String>();
+
+    }
+
+    public int[] crypte (String message_clair){
+        // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
+        return int[];
+    }
+
+    public String decrypte(int[] messageCodé){
+        //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
+        return String;
+    }
+
+    public int[] stringToBits(String message) {
+        //transforme une chaîne de caractères en un tableau d’entiers : 0 et 1
+
+        if (message == null || message.isEmpty()) {
+            // Gérer le cas où la chaîne est nulle ou vide
+            return new int[0]; // Retourner un tableau vide
+        }
+
+        int[] bits = new int[message.length() * 8]; // Chaque caractère est représenté par 8 bits
+
+        for (int i = 0; i < message.length(); i++) {
+            char c = message.charAt(i);
+            for (int j = 0; j < 8; j++) {
+                // Convertir le caractère en bits
+                bits[i * 8 + j] = (c >> (7 - j)) & 1;
+            }
+        }
+
+        return bits;
+    }
+    public String bitsToString(int[] blocks) {
+        if (blocks == null || blocks.length == 0) {
+            // Gérer le cas où le tableau est nul ou vide
+            return "";
+        }
+
+        int numBlocks = blocks.length / 8; // Chaque caractère est représenté par 8 bits
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 0; i < numBlocks; i++) {
+            int value = 0;
+            for (int j = 0; j < 8; j++) {
+                // Reconstruire la valeur binaire à partir des bits
+                value = (value << 1) | blocks[i * 8 + j];
+            }
+            stringBuilder.append((char) value); // Convertir la valeur en caractère
+        }
+
+        return stringBuilder.toString();
+    }
+
+
     public static void main(String[] args) {
         launch();
     }
