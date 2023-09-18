@@ -7,6 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class DES extends Application {
     @Override
@@ -37,7 +38,7 @@ public class DES extends Application {
         // create a tab with random int range 0-1 with 64 elements
         Random rd = new Random();
         int[] MasterKey = new int[64];
-        for (int i = 0; i < arr.length; i++) {
+        for (int i = 0; i < MasterKey.length; i++) {
             MasterKey[i] = rd.nextInt();
         }
         ArrayList<String> tab_cles = new ArrayList<String>();
@@ -46,12 +47,12 @@ public class DES extends Application {
 
     public int[] crypte (String message_clair){
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
-        return int[];
+        return new int[1];
     }
 
     public String decrypte(int[] messageCodé){
         //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
-        return String;
+        return new String();
     }
 
     public int[] stringToBits(String message) {
