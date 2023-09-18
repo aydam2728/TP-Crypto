@@ -41,7 +41,7 @@ public class DES extends Application {
         Random rd = new Random();
         int[] MasterKey = new int[64];
         for (int i = 0; i < MasterKey.length; i++) {
-            MasterKey[i] = rd.nextInt();
+            MasterKey[i] = rd.nextInt(0 , 2);
         }
         ArrayList<String> tab_cles = new ArrayList<String>();
 
