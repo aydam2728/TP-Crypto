@@ -10,6 +10,7 @@ import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
+import org.apache.commons.lang3.ArrayUtils;
 
 public class DES extends Application {
     @Override
@@ -37,12 +38,7 @@ public class DES extends Application {
 
     public DES() {
         super();
-        // create a tab with random int range 0-1 with 64 elements
-        Random rd = new Random();
-        int[] MasterKey = new int[64];
-        for (int i = 0; i < MasterKey.length; i++) {
-            MasterKey[i] = rd.nextInt(0 , 2);
-        }
+        masterkey=genereMasterKey();
         ArrayList<String> tab_cles = new ArrayList<String>();
 
     }
@@ -75,13 +71,13 @@ public class DES extends Application {
             }
         }
         System.out.println("bits.length = " + bits.length);
-        if (bits.length % 64 != 0) {
+        /*if (bits.length % 64 != 0) {
             // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
             int[] newBits = new int[bits.length % 64];
            // System.out.println("newBits.length = " + newBits.length);
-            System.arraycopy(newBits, 0, bits, bits.length-1, bits.length);
+            return ArrayUtils.addAll(bits, newBits);
         }
-
+*/
         return bits;
     }
     public String bitsToString(int[] blocks) {
@@ -107,11 +103,37 @@ public class DES extends Application {
 
     public int[][] decouppage(int [] bloc , int tailleBloc){
         // découpe un tableau d’entiers bloc en un tableau de tableaux d’entiers de taille tailleBloc
+        if (bloc.length % tailleBloc != 0) {
+             // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
+             int[] newBits = new int[tailleBloc - bloc.length % tailleBloc];
+             bloc = ArrayUtils.addAll(bloc, newBits);
+         }
         int[][] tab = new int[bloc.length/tailleBloc][tailleBloc];
         for (int i = 0; i < bloc.length; i++) {
             tab[i/tailleBloc][i%tailleBloc] = bloc[i];
         }
         return tab;
+    }
+
+    public int[] recollage_bloc(int[][] tab){
+        // recolle un tableau de tableaux d’entiers en un tableau d’entiers
+        int[] bloc = new int[tab.length*tab[0].length];
+        for (int i = 0; i < tab.length; i++) {
+            for (int j = 0; j < tab[0].length; j++) {
+                bloc[i*tab[0].length+j] = tab[i][j];
+            }
+        }
+        return bloc;
+    }
+
+    public int[] genereMasterKey(){
+        // create a tab with random int range 0-1 with 64 elements
+        Random rd = new Random();
+        int[] MasterKey = new int[64];
+        for (int i = 0; i < MasterKey.length; i++) {
+            MasterKey[i] = rd.nextInt(0 , 2);
+        }
+        return MasterKey;
     }
 
     public static void main(String[] args) {
@@ -120,6 +142,6 @@ public class DES extends Application {
         System.out.println( Arrays.toString(       des.stringToBits("Salut ! ")))    ;
         System.out.println(des.stringToBits("Hello World !").length);
         System.out.println(des.bitsToString(des.stringToBits("Hello World !")));
-        System.out.println(Arrays.deepToString(des.decouppage(des.stringToBits("Hello World !"), 8)));
+        System.out.println(Arrays.deepToString(des.decouppage(des.stringToBits("Hello World !"), 64)));
     }
 }
