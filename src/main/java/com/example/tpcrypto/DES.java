@@ -26,7 +26,16 @@ public class DES extends Application {
     int taille_sous_bloc = 32;
     int nb_ronde = 1;
     int tab_decalage = 0;
-    int perme_initiale = 0;
+    private static final int[] perm_initiale = {
+            58, 50, 42, 34, 26, 18, 10, 2,
+            60, 52, 44, 36, 28, 20, 12, 4,
+            62, 54, 46, 38, 30, 22, 14, 6,
+            64, 56, 48, 40, 32, 24, 16, 8,
+            57, 49, 41, 33, 25, 17, 9, 1,
+            59, 51, 43, 35, 27, 19, 11, 3,
+            61, 53, 45, 37, 29, 21, 13, 5,
+            63, 55, 47, 39, 31, 23, 15, 7
+    };
     ArrayList<Integer> PI = new ArrayList<Integer>();
     ArrayList<Integer> PC1 = new ArrayList<Integer>();
     ArrayList<Integer> PC2 = new ArrayList<Integer>();
