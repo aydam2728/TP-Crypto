@@ -136,6 +136,45 @@ public class DES extends Application {
         return MasterKey;
     }
 
+
+    public void permutation(int[] tab_permutation, int[] bloc) {
+        //permutation d’un bloc d’entiers bloc selon le tableau d’entiers tab_permutation
+        int[] bloc_permute = new int[tab_permutation.length];
+        for (int i = 0; i < tab_permutation.length; i++) {
+            bloc_permute[i] = bloc[tab_permutation[i]];
+        }
+    }
+
+    public void invPermutation(int[] tab_permutation, int[] bloc) {
+        //permutation inverse d’un bloc d’entiers bloc selon le tableau d’entiers tab_permutation
+        int[] bloc_permute = new int[tab_permutation.length];
+        for (int i = 0; i < tab_permutation.length; i++) {
+            bloc_permute[tab_permutation[i]] = bloc[i];
+        }
+    }
+
+   public int[] decalle_gauche(int[] bloc, int nbCran) {
+        //décale un bloc d’entiers bloc de nbCran crans vers la gauche
+        int[] bloc_decale = new int[bloc.length];
+        for (int i = 0; i < bloc.length; i++) {
+            bloc_decale[i] = bloc[(i + nbCran) % bloc.length];
+        }
+        return bloc_decale;
+    }
+    public int[] xor ( int[] tab1, int[] tab2){
+        //effectue un ou exclusif entre deux tableaux d’entiers de même taille
+        int[] tab_xor = new int[tab1.length];
+        for (int i = 0; i < tab1.length; i++) {
+            tab_xor[i] = tab1[i] ^ tab2[i];
+        }
+        return tab_xor;
+    }
+
+    public void génèreClé(int n){
+        //calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
+
+    }
+
     public static void main(String[] args) {
         //launch();
         DES des = new DES();
