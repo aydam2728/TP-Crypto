@@ -129,8 +129,18 @@ public class DES extends Application {
 
     int[] P = new int[32];
 
+    P-1
+    40 	8 	48 	16 	56 	24 	64 	32
+            39 	7 	47 	15 	55 	23 	63 	31
+            38 	6 	46 	14 	54 	22 	62 	30
+            37 	5 	45 	13 	53 	21 	61 	29
+            36 	4 	44 	12 	52 	20 	60 	28
+            35 	3 	43 	11 	51 	19 	59 	27
+            34 	2 	42 	10 	50 	18 	58 	26
+            33 	1 	41 	9 	49 	17 	57 	25
+
     int[] masterkey;
-    ArrayList<int[]> tab_cles = new ArrayList<int[]>();
+    int[][] tab_cles ;
 
     public DES() {
         super();
@@ -156,12 +166,13 @@ public class DES extends Application {
         nb_ronde = 0;
          for (int y = 0; y < 16; y++) {
              nb_ronde = y;
-
+             génèreClé(i,nb_ronde);
               bloc_crypteD = functionF(blocD);
-             bloc_crypteG= functionF(blocD);
+             blocG = blocD;
+             blocD = xor(bloc_crypteD, blocG);
 
          }
-        int[] bloc_crypte = recollage_bloc(new int[][]{bloc_crypteG, bloc_crypteD});
+        int[] bloc_crypte = recollage_bloc(new int[][]{blocG, blocD});
         // permutation P-1
          permutation(messagetab[i], perm_initiale);
         }
@@ -307,7 +318,7 @@ public class DES extends Application {
         return tab_xor;
     }
 
-    public void génèreClé(int n) {
+    public void génèreClé(int i,int n) {
         //calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
         int[] cle = new int[masterkey.length];
         // ocpy de PC1 dans cle
@@ -327,8 +338,7 @@ public class DES extends Application {
         // permutation avec pc2
         permutation(PC2, bloc_fusion);
         // stockage de la clé dans tab_clés
-        tab_cles.set(n, bloc_fusion);
-
+        tab_cle[i][n]
     }
 
     public int[] functionF(int[] unD){
