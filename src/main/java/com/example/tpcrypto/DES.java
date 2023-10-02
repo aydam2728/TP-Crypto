@@ -6,7 +6,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
@@ -25,8 +24,8 @@ public class DES extends Application {
 
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
-    int nb_ronde = 1;
-    int tab_decalage = 0;
+    int nb_ronde = 0;
+    int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
     private static final int[] perm_initiale = {
             58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
@@ -128,25 +127,67 @@ public class DES extends Application {
             28, 29, 30, 31, 32, 1
     };
 
+    int[] P = new int[32];
 
     int[] masterkey;
-    ArrayList<Integer> tab_cles = new ArrayList<Integer>();
+    ArrayList<int[]> tab_cles = new ArrayList<int[]>();
 
     public DES() {
         super();
-        masterkey = genereMasterKey();
+        masterkey = genereMasterKey(64);
+        P=genereMasterKey(32);
         ArrayList<String> tab_cles = new ArrayList<String>();
 
     }
 
     public int[] crypte(String message_clair) {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
-        return new int[1];
+       int[] messageBinaire = stringToBits(message_clair);
+       int[][] messagetab = decouppage(messageBinaire,64);
+       //perm_initiale(messageBinaire);
+        // for each blocs de 64 bits
+        for (int i = 0; i < messagetab.length; i++) {
+            // cryptage du bloc
+
+        int[] blocG = decouppage(messagetab[i], 32)[0];
+        int[] blocD = decouppage(messagetab[i], 32)[1];
+        int[] bloc_crypteG = new int[32];
+        int[] bloc_crypteD = new int[32];
+        nb_ronde = 0;
+         for (int y = 0; y < 16; y++) {
+             nb_ronde = y;
+
+              bloc_crypteD = functionF(blocD);
+             bloc_crypteG= functionF(blocD);
+
+         }
+        int[] bloc_crypte = recollage_bloc(new int[][]{bloc_crypteG, bloc_crypteD});
+        // permutation P-1
+         permutation(messagetab[i], perm_initiale);
+        }
+        return recollage_bloc(messagetab);
+
     }
 
     public String decrypte(int[] messageCodé) {
         //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
-        return "";
+        int[] blocG = decouppage(messageCodé, 32)[0];
+        int[] blocD = decouppage(messageCodé, 32)[1];
+        int[] bloc_crypteG = new int[32];
+        int[] bloc_crypteD = new int[32];
+        nb_ronde=0;
+        for (int i = 0; i < 16; i++) {
+            nb_ronde = i;
+
+            bloc_crypteD = functionF(blocD);
+            bloc_crypteG= functionF(blocD);
+
+        }
+        int[] bloc_crypte = recollage_bloc(new int[][]{bloc_crypteG, bloc_crypteD});
+        // permutation P-1
+        invPermutation(bloc_crypte, perm_initiale);
+        String msg = bitsToString(bloc_crypte);
+        return msg;
     }
 
     public int[] stringToBits(String message) {
@@ -221,10 +262,10 @@ public class DES extends Application {
         return bloc;
     }
 
-    public int[] genereMasterKey() {
+    public int[] genereMasterKey(int n) {
         // create a tab with random int range 0-1 with 64 elements
         Random rd = new Random();
-        int[] MasterKey = new int[64];
+        int[] MasterKey = new int[n];
         for (int i = 0; i < MasterKey.length; i++) {
             MasterKey[i] = rd.nextInt(0, 2);
         }
@@ -268,7 +309,61 @@ public class DES extends Application {
 
     public void génèreClé(int n) {
         //calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
+        int[] cle = new int[masterkey.length];
+        // ocpy de PC1 dans cle
+        System.arraycopy(masterkey, 0, cle, 0, masterkey.length);
+        permutation(masterkey, PC1);
+        int[] bloc_gauche = new int[perm_initiale.length / 2];
+        int[] bloc_droite = new int[perm_initiale.length / 2];
+        // découpage de la clé en deux blocs
+        System.arraycopy(masterkey, 0, bloc_gauche, 0, perm_initiale.length / 2);
+        System.arraycopy(masterkey, perm_initiale.length / 2, bloc_droite, 0, perm_initiale.length / 2);
+        // decalage vers la gauche en fonction de la ronde
+            bloc_gauche = decalle_gauche(bloc_gauche, tab_decalage[n]);
+            bloc_droite = decalle_gauche(bloc_droite, tab_decalage[n]);
+        // fusion des deux blocs
+        int[] bloc_fusion = new int[bloc_gauche.length + bloc_droite.length];
+        System.arraycopy(bloc_gauche, 0, bloc_fusion, 0, bloc_gauche.length);
+        // permutation avec pc2
+        permutation(PC2, bloc_fusion);
+        // stockage de la clé dans tab_clés
+        tab_cles.set(n, bloc_fusion);
 
+    }
+
+    public int[] functionF(int[] unD){
+        //extension du bloc Dn de 32 bits en un bloc D’n de  48 bits, `a l’aide de la transformation E en r´ep´etant  certains bits :
+        // permutation avec E
+        permutation(E, unD);
+        // xor avec la clé
+        xor(unD, tab_cles.get(nb_ronde));
+        // découpage en 8 blocs de 6 bits
+        int[][] tab_blocs = decouppage(unD, 6);
+        // pour chaque bloc, on applique la fonction S
+        for (int i = 0; i < tab_blocs.length; i++) {
+            tab_blocs[i] = functionS(tab_blocs[i]);
+        }
+        // on recolle les blocs
+        unD = recollage_bloc(tab_blocs);
+        // permutation avec P
+        permutation(P, unD);
+        return unD;
+    }
+
+    public int[] functionS(int[] tab){
+        // fonction S
+        // on récupère la ligne et la colonne
+        int ligne = tab[0] * 2 + tab[5];
+        int colonne = tab[1] * 8 + tab[2] * 4 + tab[3] * 2 + tab[4];
+        // on récupère la valeur dans la table S
+        int valeur = S[0][ligne][colonne];
+        // on convertit la valeur en binaire
+        int[] tab_valeur = new int[4];
+        for (int i = 0; i < tab_valeur.length; i++) {
+            tab_valeur[i] = valeur % 2;
+            valeur = valeur / 2;
+        }
+        return tab_valeur;
     }
 
     public static void main(String[] args) {
