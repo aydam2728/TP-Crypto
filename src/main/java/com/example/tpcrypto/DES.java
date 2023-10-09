@@ -143,13 +143,12 @@ public class DES extends Application {
 
 
     int[] masterkey;
-    int[][] tab_cles = new int[16][48] ;
+    int[][] tab_cles ;
 
     public DES() {
         super();
         masterkey = genereMasterKey(64);
         P=genereMasterKey(32);
-        ArrayList<String> tab_cles = new ArrayList<String>();
 
     }
 
@@ -157,6 +156,7 @@ public class DES extends Application {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
        int[] messageBinaire = stringToBits(message_clair);
        int[][] messagetab = decouppage(messageBinaire,64);
+       tab_cles = new int[messagetab.length][48] ;
        //perm_initiale(messageBinaire);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
@@ -395,7 +395,7 @@ public class DES extends Application {
     public static void main(String[] args) {
         //launch();
         DES des = new DES();
-        int[] msgcrypt = des.crypte("coucou");
+        int[] msgcrypt = des.crypte("Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.");
         // print
         System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
         //decrypt
