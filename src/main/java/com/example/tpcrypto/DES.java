@@ -143,12 +143,13 @@ public class DES extends Application {
 
 
     int[] masterkey;
-    int[][] tab_cles ;
+    int[][] tab_cles = new int[16][48] ;
 
     public DES() {
         super();
         masterkey = genereMasterKey(64);
         P=genereMasterKey(32);
+        ArrayList<String> tab_cles = new ArrayList<String>();
 
     }
 
@@ -156,7 +157,6 @@ public class DES extends Application {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
        int[] messageBinaire = stringToBits(message_clair);
        int[][] messagetab = decouppage(messageBinaire,64);
-       tab_cles = new int[messagetab.length][48] ;
        //perm_initiale(messageBinaire);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
