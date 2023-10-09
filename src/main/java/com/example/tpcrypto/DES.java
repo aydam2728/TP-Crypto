@@ -27,36 +27,37 @@ public class DES extends Application {
     int nb_ronde = 0;
     int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
     private static final int[] perm_initiale = {
-            58, 50, 42, 34, 26, 18, 10, 2,
-            60, 52, 44, 36, 28, 20, 12, 4,
-            62, 54, 46, 38, 30, 22, 14, 6,
-            64, 56, 48, 40, 32, 24, 16, 8,
             57, 49, 41, 33, 25, 17, 9, 1,
             59, 51, 43, 35, 27, 19, 11, 3,
             61, 53, 45, 37, 29, 21, 13, 5,
-            63, 55, 47, 39, 31, 23, 15, 7
+            63, 55, 47, 39, 31, 23, 15, 7,
+            56, 48, 40, 32, 24, 16, 8, 0,
+            58, 50, 42, 34, 26, 18, 10, 2,
+            60, 52, 44, 36, 28, 20, 12, 4,
+            62, 54, 46, 38, 30, 22, 14, 6
     };
     ArrayList<Integer> PI = new ArrayList<Integer>();
     private static final int[] PC1 = {
-            57, 49, 41, 33, 25, 17, 9,
-            1, 58, 50, 42, 34, 26, 18,
-            10, 2, 59, 51, 43, 35, 27,
-            19, 11, 3, 60, 52, 44, 36,
-            63, 55, 47, 39, 31, 23, 15,
-            7, 62, 54, 46, 38, 30, 22,
-            14, 6, 61, 53, 45, 37, 29,
-            21, 13, 5, 28, 20, 12, 4
+            56, 48, 40, 32, 24, 16, 8,
+            0, 57, 49, 41, 33, 25, 17,
+            9, 1, 58, 50, 42, 34, 26,
+            18, 10, 2, 59, 51, 43, 35,
+            62, 54, 46, 38, 30, 22, 14,
+            6, 61, 53, 45, 37, 29, 21,
+            13, 5, 60, 52, 44, 36, 28,
+            20, 12, 4, 27, 19, 11, 3
     };
     private static final int[] PC2 = {
-            14, 17, 11, 24, 1, 5,
-            3, 28, 15, 6, 21, 10,
-            23, 19, 12, 4, 26, 8,
-            16, 7, 27, 20, 13, 2,
-            41, 52, 31, 37, 47, 55,
-            30, 40, 51, 45, 33, 48,
-            44, 49, 39, 56, 34, 53,
-            46, 42, 50, 36, 29, 32
+            13, 16, 10, 23, 0, 4,
+            2, 27, 14, 5, 20, 9,
+            22, 18, 11, 3, 25, 7,
+            15, 6, 26, 19, 12, 1,
+            40, 51, 30, 36, 46, 54,
+            29, 39, 50, 44, 32, 47,
+            43, 48, 38, 55, 33, 52,
+            45, 41, 49, 35, 28, 31
     };
+
     int[][][] S = {
             {
                     {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -117,30 +118,32 @@ public class DES extends Application {
 
 
     int[] E = {
-            32, 1, 2, 3, 4, 5,
-            4, 5, 6, 7, 8, 9,
-            8, 9, 10, 11, 12, 13,
-            12, 13, 14, 15, 16, 17,
-            16, 17, 18, 19, 20, 21,
-            20, 21, 22, 23, 24, 25,
-            24, 25, 26, 27, 28, 29,
-            28, 29, 30, 31, 32, 1
+            31, 0, 1, 2, 3, 4,
+            3, 4, 5, 6, 7, 8,
+            7, 8, 9, 10, 11, 12,
+            11, 12, 13, 14, 15, 16,
+            15, 16, 17, 18, 19, 20,
+            19, 20, 21, 22, 23, 24,
+            23, 24, 25, 26, 27, 28,
+            27, 28, 29, 30, 31, 0
     };
 
-    int[] P = new int[32];
 
-    P-1
-    40 	8 	48 	16 	56 	24 	64 	32
-            39 	7 	47 	15 	55 	23 	63 	31
-            38 	6 	46 	14 	54 	22 	62 	30
-            37 	5 	45 	13 	53 	21 	61 	29
-            36 	4 	44 	12 	52 	20 	60 	28
-            35 	3 	43 	11 	51 	19 	59 	27
-            34 	2 	42 	10 	50 	18 	58 	26
-            33 	1 	41 	9 	49 	17 	57 	25
+    int[] P = new int[32];
+    private static final int[] Pinv = {
+            39, 7, 47, 15, 55, 23, 63, 31,
+            38, 6, 46, 14, 54, 22, 62, 30,
+            37, 5, 45, 13, 53, 21, 61, 29,
+            36, 4, 44, 12, 52, 20, 60, 28,
+            35, 3, 43, 11, 51, 19, 59, 27,
+            34, 2, 42, 10, 50, 18, 58, 26,
+            33, 1, 41, 9, 49, 17, 57, 25,
+            32, 0, 40, 8, 48, 16, 56, 24
+    };
+
 
     int[] masterkey;
-    int[][] tab_cles ;
+    int[][] tab_cles = new int[16][48] ;
 
     public DES() {
         super();
@@ -174,31 +177,37 @@ public class DES extends Application {
          }
         int[] bloc_crypte = recollage_bloc(new int[][]{blocG, blocD});
         // permutation P-1
-         permutation(messagetab[i], perm_initiale);
+         permutation(messagetab[i], Pinv);
         }
+        // retrun the tab of int
         return recollage_bloc(messagetab);
-
     }
 
     public String decrypte(int[] messageCodé) {
         //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
-        int[] blocG = decouppage(messageCodé, 32)[0];
-        int[] blocD = decouppage(messageCodé, 32)[1];
-        int[] bloc_crypteG = new int[32];
-        int[] bloc_crypteD = new int[32];
-        nb_ronde=0;
-        for (int i = 0; i < 16; i++) {
-            nb_ronde = i;
+        int[][] messagetab = decouppage(messageCodé,64);
+        // for each blocs de 64 bits
+        for (int i = 0; i < messagetab.length; i++) {
+            // cryptage du bloc
 
-            bloc_crypteD = functionF(blocD);
-            bloc_crypteG= functionF(blocD);
+            int[] blocG = decouppage(messagetab[i], 32)[0];
+            int[] blocD = decouppage(messagetab[i], 32)[1];
+            int[] bloc_crypteG = new int[32];
+            int[] bloc_crypteD = new int[32];
+            nb_ronde = 0;
+            for (int y = 0; y < 16; y++) {
+                nb_ronde = y;
+                génèreClé(i,nb_ronde);
+                bloc_crypteD = functionF(blocD);
+                blocG = blocD;
+                blocD = xor(bloc_crypteD, blocG);
 
+            }
+            int[] bloc_crypte = recollage_bloc(new int[][]{blocG, blocD});
+            // permutation P-1
+            permutation(messagetab[i], Pinv);
         }
-        int[] bloc_crypte = recollage_bloc(new int[][]{bloc_crypteG, bloc_crypteD});
-        // permutation P-1
-        invPermutation(bloc_crypte, perm_initiale);
-        String msg = bitsToString(bloc_crypte);
-        return msg;
+        return bitsToString(recollage_bloc(messagetab));
     }
 
     public int[] stringToBits(String message) {
@@ -218,7 +227,6 @@ public class DES extends Application {
                 bits[i * 8 + j] = (c >> (7 - j)) & 1;
             }
         }
-        System.out.println("bits.length = " + bits.length);
         /*if (bits.length % 64 != 0) {
             // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
             int[] newBits = new int[bits.length % 64];
@@ -251,6 +259,14 @@ public class DES extends Application {
     }
 
     public int[][] decouppage(int[] bloc, int tailleBloc) {
+        if (bloc.length ==32 && tailleBloc == 6) {
+           // decoupage en  8 blocs de 6
+            int[][] tab = new int[8][6];
+            for (int i = 0; i < bloc.length; i++) {
+                tab[i / tailleBloc][i % tailleBloc] = bloc[i];
+            }
+            return tab;
+        }
         // découpe un tableau d’entiers bloc en un tableau de tableaux d’entiers de taille tailleBloc
         if (bloc.length % tailleBloc != 0) {
             // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
@@ -337,8 +353,8 @@ public class DES extends Application {
         System.arraycopy(bloc_gauche, 0, bloc_fusion, 0, bloc_gauche.length);
         // permutation avec pc2
         permutation(PC2, bloc_fusion);
-        // stockage de la clé dans tab_clés
-        tab_cle[i][n]
+        // stockage de la clé dans tab_cles
+        tab_cles[i]=bloc_fusion;
     }
 
     public int[] functionF(int[] unD){
@@ -346,7 +362,7 @@ public class DES extends Application {
         // permutation avec E
         permutation(E, unD);
         // xor avec la clé
-        xor(unD, tab_cles.get(nb_ronde));
+        xor(unD, tab_cles[nb_ronde]);
         // découpage en 8 blocs de 6 bits
         int[][] tab_blocs = decouppage(unD, 6);
         // pour chaque bloc, on applique la fonction S
@@ -379,9 +395,11 @@ public class DES extends Application {
     public static void main(String[] args) {
         //launch();
         DES des = new DES();
-        System.out.println(Arrays.toString(des.stringToBits("Salut ! ")));
-        System.out.println(des.stringToBits("Hello World !").length);
-        System.out.println(des.bitsToString(des.stringToBits("Hello World !")));
-        System.out.println(Arrays.deepToString(des.decouppage(des.stringToBits("Hello World !"), 64)));
+        int[] msgcrypt = des.crypte("coucou");
+        // print
+        System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
+        //decrypt
+        System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
+
     }
 }
