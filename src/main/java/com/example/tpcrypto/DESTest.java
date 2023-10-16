@@ -22,7 +22,7 @@ class DESTest {
 
     @Test
     void crypte() {
-        // Test encryption
+        // Teste encryption
         String plaintext = "coucou";
         int[] encrypted = des.crypte(plaintext);
         assertNotNull(encrypted);
@@ -31,7 +31,7 @@ class DESTest {
 
     @Test
     void decrypte() {
-        // Test decryption
+        // Teste decryption
         String plaintext = "coucou";
         int[] encrypted = des.crypte(plaintext);
         assertNotNull(encrypted);
@@ -43,7 +43,7 @@ class DESTest {
 
     @Test
     void stringToBits() {
-        // Test string to bits conversion
+        // Teste conversion string to bits
         String input = "test";
         int[] bits = des.stringToBits(input);
         assertNotNull(bits);
@@ -52,7 +52,7 @@ class DESTest {
 
     @Test
     void bitsToString() {
-        // Test bits to string conversion
+        // Teste conversion bits to string
         String expected = "test";
         int[] bits = des.stringToBits(expected);
         String result = des.bitsToString(bits);
@@ -62,7 +62,7 @@ class DESTest {
 
     @Test
     void decouppage() {
-        // Test block splitting
+        // Teste séparation block
         int[] input = {1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0}; // 12 bits
         int[][] blocks = des.decouppage(input, 6);
         assertNotNull(blocks);
@@ -73,8 +73,8 @@ class DESTest {
 
     @Test
     void recollage_bloc() {
-        // Test block merging
-        int[][] input = {{1, 0, 1}, {0, 1, 0}}; // Two 3-bit blocks
+        // Teste fusion block
+        int[][] input = {{1, 0, 1}, {0, 1, 0}}; // 2 blocks 3-bit
         int[] merged = des.recollage_bloc(input);
         assertNotNull(merged);
         assertEquals(6, merged.length);
@@ -82,7 +82,7 @@ class DESTest {
 
     @Test
     void genereMasterKey() {
-        // Test master key generation
+        // Teste création master key
         int keyLength = 64;
         int[] key = des.genereMasterKey(keyLength);
         assertNotNull(key);
@@ -91,38 +91,38 @@ class DESTest {
 
     @Test
     void permutation() {
-        // Test permutation
+        // Teste permutation
         int[] input = {1, 0, 1, 0, 1, 0}; // 6 bits
         int[] permutationTable = {5, 3, 1, 6, 4, 2}; // Example permutation table
         des.permutation(permutationTable, input);
-        // Validate the permutation result manually based on the permutationTable
+        // Validation de la permutation en fonction de la permutationTable
         assertArrayEquals(new int[]{0, 1, 0, 1, 1, 0}, input);
     }
 
     @Test
     void invPermutation() {
-        // Test inverse permutation
+        // Teste permutation inversée
         int[] input = {0, 1, 0, 1, 1, 0}; // 6 bits
         int[] permutationTable = {5, 3, 1, 6, 4, 2}; // Example permutation table
         des.invPermutation(permutationTable, input);
-        // Validate the inverse permutation result manually based on the permutationTable
+        // Validation de la permutation inversée en fonction de la permutationTable
         assertArrayEquals(new int[]{1, 0, 1, 0, 1, 0}, input);
     }
 
     @Test
     void decalle_gauche() {
-        // Test left shift
+        // Teste décalage gauche
         int[] input = {1, 0, 1, 0, 1}; // 5 bits
         int shiftAmount = 2;
         int[] shifted = des.decalle_gauche(input, shiftAmount);
         assertNotNull(shifted);
-        assertArrayEquals(new int[]{1, 0, 1, 0, 1}, input); // Ensure input array is not modified
-        assertArrayEquals(new int[]{1, 0, 1, 0, 1}, shifted); // Left shift by 2 is the same as no shift for this input
+        assertArrayEquals(new int[]{1, 0, 1, 0, 1}, input); // Verifie que l'input n'est pas modifié
+        assertArrayEquals(new int[]{1, 0, 1, 0, 1}, shifted); // Décalage de 2 bits vers la gauche est le même que pas de décalage pour cette exemple
     }
 
     @Test
     void xor() {
-        // Test XOR operation
+        // Teste opération XOR
         int[] input1 = {1, 0, 1, 0};
         int[] input2 = {1, 1, 0, 0};
         int[] result = des.xor(input1, input2);
