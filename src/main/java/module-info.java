@@ -1,11 +1,8 @@
 module com.example.tpcrypto {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires javafx.web;
     requires org.apache.commons.lang3;
     requires org.junit.jupiter.api;
     requires java.desktop;
     requires java.logging;
-    opens com.example.tpcrypto to javafx.fxml;
+    opens com.example.tpcrypto;
     exports com.example.tpcrypto;
 }

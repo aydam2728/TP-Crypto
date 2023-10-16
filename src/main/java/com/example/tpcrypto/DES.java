@@ -1,10 +1,5 @@
 package com.example.tpcrypto;
 
-import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,15 +7,7 @@ import java.util.Random;
 
 import org.apache.commons.lang3.ArrayUtils;
 
-public class DES extends Application {
-    @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(DES.class.getResource("hello-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
-        stage.setScene(scene);
-        stage.show();
-    }
+public class DES {
 
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
@@ -143,41 +130,46 @@ public class DES extends Application {
 
 
     int[] masterkey;
-    int[][] tab_cles = new int[16][48] ;
+    int[][] tab_cles ;
 
     public DES() {
         super();
         masterkey = genereMasterKey(64);
         P=genereMasterKey(32);
-        ArrayList<String> tab_cles = new ArrayList<String>();
 
     }
 
     public int[] crypte(String message_clair) {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
-       int[] messageBinaire = stringToBits(message_clair);
-       int[][] messagetab = decouppage(messageBinaire,64);
-       //perm_initiale(messageBinaire);
+        int[] messageBinaire = stringToBits(message_clair);
+        int[][] messagetab = decouppage(messageBinaire,64);
+        if (messagetab.length > 16){
+            tab_cles = new int[messagetab.length][48] ;
+        }else{
+            tab_cles = new int[16][48] ;
+
+        }
+        //perm_initiale(messageBinaire);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
             // cryptage du bloc
 
-        int[] blocG = decouppage(messagetab[i], 32)[0];
-        int[] blocD = decouppage(messagetab[i], 32)[1];
-        int[] bloc_crypteG = new int[32];
-        int[] bloc_crypteD = new int[32];
-        nb_ronde = 0;
-         for (int y = 0; y < 16; y++) {
-             nb_ronde = y;
-             génèreClé(i,nb_ronde);
-              bloc_crypteD = functionF(blocD);
-             blocG = blocD;
-             blocD = xor(bloc_crypteD, blocG);
+            int[] blocG = decouppage(messagetab[i], 32)[0];
+            int[] blocD = decouppage(messagetab[i], 32)[1];
+            int[] bloc_crypteG = new int[32];
+            int[] bloc_crypteD = new int[32];
+            nb_ronde = 0;
+            for (int y = 0; y < 16; y++) {
+                nb_ronde = y;
+                génèreClé(i,nb_ronde);
+                bloc_crypteD = functionF(blocD);
+                blocG = blocD;
+                blocD = xor(bloc_crypteD, blocG);
 
-         }
-        int[] bloc_crypte = recollage_bloc(new int[][]{blocG, blocD});
-        // permutation P-1
-         permutation(messagetab[i], Pinv);
+            }
+            int[] bloc_crypte = recollage_bloc(new int[][]{blocG, blocD});
+            // permutation P-1
+            permutation(messagetab[i], Pinv);
         }
         // retrun the tab of int
         return recollage_bloc(messagetab);
@@ -260,7 +252,7 @@ public class DES extends Application {
 
     public int[][] decouppage(int[] bloc, int tailleBloc) {
         if (bloc.length ==32 && tailleBloc == 6) {
-           // decoupage en  8 blocs de 6
+            // decoupage en  8 blocs de 6
             int[][] tab = new int[8][6];
             for (int i = 0; i < bloc.length; i++) {
                 tab[i / tailleBloc][i % tailleBloc] = bloc[i];
@@ -346,8 +338,8 @@ public class DES extends Application {
         System.arraycopy(masterkey, 0, bloc_gauche, 0, perm_initiale.length / 2);
         System.arraycopy(masterkey, perm_initiale.length / 2, bloc_droite, 0, perm_initiale.length / 2);
         // decalage vers la gauche en fonction de la ronde
-            bloc_gauche = decalle_gauche(bloc_gauche, tab_decalage[n]);
-            bloc_droite = decalle_gauche(bloc_droite, tab_decalage[n]);
+        bloc_gauche = decalle_gauche(bloc_gauche, tab_decalage[n]);
+        bloc_droite = decalle_gauche(bloc_droite, tab_decalage[n]);
         // fusion des deux blocs
         int[] bloc_fusion = new int[bloc_gauche.length + bloc_droite.length];
         System.arraycopy(bloc_gauche, 0, bloc_fusion, 0, bloc_gauche.length);
@@ -393,13 +385,12 @@ public class DES extends Application {
     }
 
     public static void main(String[] args) {
-        //launch();
-        DES des = new DES();
-        int[] msgcrypt = des.crypte("Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.");
+        //DES des = new DES();
+        //int[] msgcrypt = des.crypte("Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.");
         // print
-        System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
+        //System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
         //decrypt
-        System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
+        //System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
 
     }
 }
