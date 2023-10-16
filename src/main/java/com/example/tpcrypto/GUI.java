@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package com.example.tpcrypto;
 
 import javax.swing.*;
@@ -140,6 +136,10 @@ public class GUI extends javax.swing.JFrame {
         String text = jTextArea1.getText();
 
         JFileChooser chooser = new JFileChooser();
+        chooser.setAcceptAllFileFilterUsed(false);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text File", "txt");
+        chooser.addChoosableFileFilter(filter);
+
         int result = chooser.showSaveDialog(null);
 
         if (result == JFileChooser.APPROVE_OPTION) {
@@ -174,7 +174,7 @@ public class GUI extends javax.swing.JFrame {
         // TODO add your handling code here:
         System.out.println("loadFileMenuMouseClicked");
         jFileChooser.setAcceptAllFileFilterUsed(false);
-        FileNameExtensionFilter filter = new FileNameExtensionFilter("Texte File", "txt");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text File", "txt");
         jFileChooser.addChoosableFileFilter(filter);
         int returnValue = jFileChooser.showOpenDialog(this);
         if (returnValue == jFileChooser.APPROVE_OPTION) {

@@ -385,12 +385,12 @@ public class DES {
     }
 
     public static void main(String[] args) {
-        //DES des = new DES();
-        //int[] msgcrypt = des.crypte("Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.");
+        DES des = new DES();
+        int[] msgcrypt = des.crypte("Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.");
         // print
-        //System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
+        System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
         //decrypt
-        //System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
+        System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
 
     }
 }
