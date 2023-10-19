@@ -1,11 +1,9 @@
 package com.example.tpcrypto;
 
-import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Random;
 
-import org.apache.commons.lang3.ArrayUtils;
 
 public class DES {
 
@@ -158,7 +156,6 @@ public class DES {
 
         // découpage en blocs de 64 bits
         int[][] messagetab = decouppage(messageBinaire,64);
-        //perm_initiale(messageBinaire);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
             messagetab[i]= permutation(perm_initiale,messagetab[i]);
@@ -252,13 +249,6 @@ public class DES {
                 bits[i * 8 + j] = (c >> (7 - j)) & 1;
             }
         }
-        /*if (bits.length % 64 != 0) {
-            // Gérer le cas où le tableau n'est pas un multiple de 64, bourrage de 0
-            int[] newBits = new int[bits.length % 64];
-           // System.out.println("newBits.length = " + newBits.length);
-            return ArrayUtils.addAll(bits, newBits);
-        }
-*/
         return bits;
     }
 
@@ -296,7 +286,7 @@ public class DES {
         // recolle un tableau de tableaux d’entiers en un tableau d’entiers
         int[] bloc = new int[tab.length * tab[0].length];
         for (int i = 0; i < tab.length; i++) {
-            System.arraycopy(tab[i], 0, bloc, i * tab[0].length + 0, tab[0].length);
+            System.arraycopy(tab[i], 0, bloc, i * tab[0].length, tab[0].length);
         }
         return bloc;
     }
