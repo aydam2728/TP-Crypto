@@ -215,8 +215,9 @@ public class DES {
             messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
         }
         // remove padding
-        int[] result=removePadding(recollage_bloc(messagetab));
+        int[] result=(recollage_bloc(messagetab));
         // return the tab of int
+        System.out.println("result = " + Arrays.toString(result));
         return bitsToString(result);
     }
 
