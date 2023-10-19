@@ -166,7 +166,10 @@ public class GUI extends javax.swing.JFrame {
         // encrypt the text
         int[] encryptedText = des.crypte(text);
         // set the encrypted text
-        jTextArea1.setText(Arrays.toString(encryptedText));
+        jTextArea1.setText(Arrays.toString(encryptedText) .replace(",", "")
+                .replace("[", "")
+                .replace("]", "")
+                .trim());
 
     }
 
