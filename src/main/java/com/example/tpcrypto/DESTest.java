@@ -95,7 +95,7 @@ class DESTest {
         // Teste permutation
         int[] input = {1, 0, 1, 0, 1, 0}; // 6 bits
         int[] permutationTable = {4, 2, 0, 5, 3, 1}; // Example permutation table
-        des.permutation(permutationTable, input);
+        input=des.permutation(permutationTable, input);
         // Validation de la permutation en fonction de la permutationTable
         assertArrayEquals(new int[]{1, 1, 1, 0, 0, 0}, input);
     }
@@ -103,11 +103,11 @@ class DESTest {
     @Test
     void invPermutation() {
         // Teste permutation inversée
-        int[] input = {0, 1, 0, 1, 1, 0}; // 6 bits
-        int[] permutationTable = {5, 3, 1, 6, 4, 2}; // Example permutation table
-        des.invPermutation(permutationTable, input);
+        int[] input = {1, 0, 1, 0, 1, 0}; // 6 bits
+        int[] permutationTable = {4, 2, 0, 5, 3, 1}; // Example permutation table
+        input=des.invPermutation(permutationTable, input);
         // Validation de la permutation inversée en fonction de la permutationTable
-        assertArrayEquals(new int[]{1, 0, 1, 0, 1, 0}, input);
+        assertArrayEquals(new int[]{1, 0, 0, 1, 1, 0}, input);
     }
 
     @Test
@@ -118,7 +118,7 @@ class DESTest {
         int[] shifted = des.decalle_gauche(input, shiftAmount);
         assertNotNull(shifted);
         assertArrayEquals(new int[]{1, 0, 1, 0, 1}, input); // Verifie que l'input n'est pas modifié
-        assertArrayEquals(new int[]{1, 0, 1, 0, 1}, shifted); // Décalage de 2 bits vers la gauche est le même que pas de décalage pour cette exemple
+        assertArrayEquals(new int[]{1, 0, 1, 1, 0}, shifted); // Décalage de 2 bits vers la gauche est le même que pas de décalage pour cette exemple
     }
 
     @Test
@@ -135,5 +135,14 @@ class DESTest {
     void génèreClé() {
         // Test subkey generation
         // Add your test cases for this method here
+    }
+
+    @Test
+    void FunctionS() {
+        // Teste fonction S
+        int[] input = {1,1,0,1,1,1}; // 6 bits
+        int[] result = des.functionS(input);
+        assertNotNull(result);
+        assertArrayEquals(new int[]{1, 1, 1, 0}, result);
     }
 }

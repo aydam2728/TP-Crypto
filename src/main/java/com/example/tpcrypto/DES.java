@@ -6,12 +6,12 @@ import java.util.Random;
 
 
 public class DES {
-
+    boolean debourrage = false;
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
     int nb_ronde = 0;
     int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
-    private static final int[] perm_initiale = {
+    static final int[] perm_initiale = {
             57, 49, 41, 33, 25, 17, 9, 1,
             59, 51, 43, 35, 27, 19, 11, 3,
             61, 53, 45, 37, 29, 21, 13, 5,
@@ -119,7 +119,7 @@ public class DES {
             1, 7, 23, 13, 31, 26, 2, 8,
             18, 12, 29, 5, 21, 10, 3, 24
     };
-    private static final int[] Pinv = {
+    static final int[] Pinv = {
             39, 7, 47, 15, 55, 23, 63, 31,
             38, 6, 46, 14, 54, 22, 62, 30,
             37, 5, 45, 13, 53, 21, 61, 29,
@@ -190,11 +190,13 @@ public class DES {
         int[][] messagetab = decouppage(messageCodé,64);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
+            // permutation initiale
+            messagetab[i]= permutation(perm_initiale,messagetab[i]);
             // cryptage du bloc
             int[] blocG = decouppage(messagetab[i], 32)[0];
             int[] blocD = decouppage(messagetab[i], 32)[1];
             nb_ronde = 15;
-            for (int y = 15; y >-1; y--) {
+            for (int y = 15; y >=0; y--) {
                 nb_ronde = y;
                 // Feistel function
                 int[] fResult = functionF(blocG);
@@ -211,8 +213,12 @@ public class DES {
             // permutation P-1
             messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
         }
+        int[] result=recollage_bloc(messagetab);
         // remove padding
-        int[] result=(recollage_bloc(messagetab));
+        if (debourrage){
+            result=removePadding(result);
+        }
+
         // return the tab of int
         System.out.println("result = " + Arrays.toString(result));
         return bitsToString(result);
@@ -392,7 +398,7 @@ public class DES {
         // on convertit la valeur en binaire
         int[] tab_valeur = new int[4];
         for (int i = 0; i < tab_valeur.length; i++) {
-            tab_valeur[i] = valeur % 2;
+            tab_valeur[tab_valeur.length - 1 - i] = valeur % 2;
             valeur = valeur / 2;
         }
         return tab_valeur;
@@ -400,8 +406,8 @@ public class DES {
 
     public static void main(String[] args) {
         DES des = new DES();
-        //String msg = "Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.";
-        String msg="bonjoura";
+        String msg = "Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.";
+        //String msg="bonjour a tres bientot ds le bus";
         int[] msgcrypt = des.crypte(msg);
         // print
         System.out.println("msg : " + Arrays.toString(des.stringToBits(msg)));
