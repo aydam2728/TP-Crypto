@@ -275,6 +275,45 @@ public class DES {
         return bitsToString(result);
     }
 
+    public int[] decrypteINT(int[] messageCodé) {
+        //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
+        int[][] messagetab = decouppage(messageCodé,64);
+        // Pour tout bloc de 64 bits
+        for (int i = 0; i < messagetab.length; i++) {
+            // permutation initiale
+            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            // cryptage du bloc
+            int[] blocG = decouppage(messagetab[i], 32)[0];
+            int[] blocD = decouppage(messagetab[i], 32)[1];
+            nb_ronde = 15;
+            for (int y = 15; y >=0; y--) {
+                nb_ronde = y;
+                // Feistel function
+                int[] fResult = functionF(blocG);
+
+                // XOR avec blocG
+                int[] xorResult = xor(blocD, fResult);
+
+                // Swap les blocs
+                blocD = blocG;
+                blocG = xorResult;
+
+            }
+            messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
+            // permutation P-1
+            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+        }
+        int[] result=recollage_bloc(messagetab);
+        // retire le bourrage
+        if (debourrage){
+            result=retireBourrage(result);
+        }
+
+        // return le tableau d'entiers
+        System.out.println("result = " + Arrays.toString(result));
+        return result;
+    }
+
     public int[] retireBourrage(int[] message) {
         // Assumons que vous avez bourré avec des zéros, trouvez le dernier bit non nul
         int lastNonZeroIndex = message.length - 1;
@@ -470,5 +509,3 @@ public class DES {
         System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
     }
 }
-
-// Teste push
