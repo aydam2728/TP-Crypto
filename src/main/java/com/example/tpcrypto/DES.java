@@ -9,6 +9,7 @@ public class DES {
     boolean debourrage = false;
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
+    boolean genereCle = true;
     int nb_ronde = 0;
     int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
     static final int[] perm_initiale = {
@@ -139,6 +140,11 @@ public class DES {
         tab_cles = new int[16][48];
     }
 
+    public DES(int[][] tab_cles) {
+        masterkey = genereMasterKey(64);
+        this.tab_cles = tab_cles;
+    }
+
     public int[] crypte(String message_clair) {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
         int[] messageBinaire = stringToBits(message_clair);
@@ -182,6 +188,51 @@ public class DES {
             messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
         }
         // return la table d'entiers
+        return recollage_bloc(messagetab);
+    }
+    public int[] crypte(int[] message_clair) {
+        // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
+        int[] messageBinaire = message_clair    ;
+        // Calculate padding length
+        if (messageBinaire.length % 64 != 0) {
+            int paddingLength = 64 -(messageBinaire.length % 64);
+            int[] padding = new int[paddingLength];
+
+            // Create a new array with the padding included
+            int[] paddedMessage = new int[messageBinaire.length + paddingLength];
+            System.arraycopy(messageBinaire, 0, paddedMessage, 0, messageBinaire.length);
+            System.arraycopy(padding, 0, paddedMessage, messageBinaire.length, paddingLength);
+            messageBinaire = paddedMessage;
+        }
+
+        // découpage en blocs de 64 bits
+        int[][] messagetab = decouppage(messageBinaire,64);
+        // for each blocs de 64 bits
+        for (int i = 0; i < messagetab.length; i++) {
+            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            // cryptage du bloc
+            int[] blocG = decouppage(messagetab[i], 32)[0];
+            int[] blocD = decouppage(messagetab[i], 32)[1];
+            nb_ronde = 0;
+            for (int y = 0; y < 16; y++) {
+                nb_ronde = y;
+                if (i==0){
+                    génèreClé(nb_ronde);
+                }
+                // Feistel function
+                int[] fResult = functionF(blocD);
+                // xor avec blocG
+                int[] xorResult = xor(blocG, fResult);
+                // Swap the halves
+                blocG = blocD;
+                blocD = xorResult;
+
+            }
+            messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
+            // permutation P-1
+            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+        }
+        // return the tab of int
         return recollage_bloc(messagetab);
     }
 
@@ -345,7 +396,10 @@ public class DES {
     }
 
     public void génèreClé(int n) {
-        // Calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
+        if (! this.genereCle) {
+            return;
+        }
+        //calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
         int[] cle = new int[masterkey.length];
         // Copie de PC1 dans cle
         System.arraycopy(masterkey, 0, cle, 0, masterkey.length);
