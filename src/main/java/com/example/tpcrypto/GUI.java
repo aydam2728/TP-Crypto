@@ -38,6 +38,7 @@ public class GUI extends javax.swing.JFrame {
         label1 = new java.awt.Label();
         label2 = new java.awt.Label();
         label3 = new java.awt.Label();
+        label4 = new java.awt.Label();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         loadFileMenu = new javax.swing.JMenuItem();
@@ -250,6 +251,7 @@ public class GUI extends javax.swing.JFrame {
     private java.awt.Label label1;
     private java.awt.Label label2;
     private java.awt.Label label3;
+    private java.awt.Label label4;
     private javax.swing.JMenuItem loadFileMenu;
     private javax.swing.JMenuItem saveFileMenu;
     // End of variables declaration
