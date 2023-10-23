@@ -132,12 +132,6 @@ class DESTest {
     }
 
     @Test
-    void génèreClé() {
-        // Test subkey generation
-        // Add your test cases for this method here
-    }
-
-    @Test
     void FunctionS() {
         // Teste fonction S
         int[] input = {1,1,0,1,1,1}; // 6 bits
