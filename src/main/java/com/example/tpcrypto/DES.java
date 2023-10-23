@@ -216,7 +216,7 @@ public class DES {
         int[] result=recollage_bloc(messagetab);
         // retire le bourrage
         if (debourrage){
-            result=removePadding(result);
+            result=retireBourrage(result);
         }
 
         // return le tableau d'entiers
@@ -224,7 +224,7 @@ public class DES {
         return bitsToString(result);
     }
 
-    public int[] removePadding(int[] message) {
+    public int[] retireBourrage(int[] message) {
         // Assumons que vous avez bourré avec des zéros, trouvez le dernier bit non nul
         int lastNonZeroIndex = message.length - 1;
         while (lastNonZeroIndex >= 0 && message[lastNonZeroIndex] == 0) {
