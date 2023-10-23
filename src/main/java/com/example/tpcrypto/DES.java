@@ -6,12 +6,6 @@ import java.util.Random;
 
 
 public class DES {
-    boolean debourrage = false;
-    int taille_bloc = 64;
-    int taille_sous_bloc = 32;
-    boolean genereCle = true;
-    int nb_ronde = 0;
-    int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
     static final int[] perm_initiale = {
             57, 49, 41, 33, 25, 17, 9, 1,
             59, 51, 43, 35, 27, 19, 11, 3,
@@ -21,6 +15,16 @@ public class DES {
             58, 50, 42, 34, 26, 18, 10, 2,
             60, 52, 44, 36, 28, 20, 12, 4,
             62, 54, 46, 38, 30, 22, 14, 6
+    };
+    static final int[] Pinv = {
+            39, 7, 47, 15, 55, 23, 63, 31,
+            38, 6, 46, 14, 54, 22, 62, 30,
+            37, 5, 45, 13, 53, 21, 61, 29,
+            36, 4, 44, 12, 52, 20, 60, 28,
+            35, 3, 43, 11, 51, 19, 59, 27,
+            34, 2, 42, 10, 50, 18, 58, 26,
+            33, 1, 41, 9, 49, 17, 57, 25,
+            32, 0, 40, 8, 48, 16, 56, 24
     };
     private static final int[] PC1 = {
             56, 48, 40, 32, 24, 16, 8,
@@ -42,7 +46,12 @@ public class DES {
             43, 48, 38, 55, 33, 52,
             45, 41, 49, 35, 28, 31
     };
-
+    boolean debourrage = false;
+    int taille_bloc = 64;
+    int taille_sous_bloc = 32;
+    boolean genereCle = true;
+    int nb_ronde = 0;
+    int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1};
     int[][][] S = {
             {
                     {14, 4, 13, 1, 2, 15, 11, 8, 3, 10, 6, 12, 5, 9, 0, 7},
@@ -100,8 +109,6 @@ public class DES {
                     {2, 1, 14, 7, 4, 10, 8, 13, 15, 12, 9, 0, 3, 5, 6, 11}
             }
     };
-
-
     int[] E = {
             31, 0, 1, 2, 3, 4,
             3, 4, 5, 6, 7, 8,
@@ -112,28 +119,14 @@ public class DES {
             23, 24, 25, 26, 27, 28,
             27, 28, 29, 30, 31, 0
     };
-
-
     int[] P = {
             15, 6, 19, 20, 28, 11, 27, 16,
             0, 14, 22, 25, 4, 17, 30, 9,
             1, 7, 23, 13, 31, 26, 2, 8,
             18, 12, 29, 5, 21, 10, 3, 24
     };
-    static final int[] Pinv = {
-            39, 7, 47, 15, 55, 23, 63, 31,
-            38, 6, 46, 14, 54, 22, 62, 30,
-            37, 5, 45, 13, 53, 21, 61, 29,
-            36, 4, 44, 12, 52, 20, 60, 28,
-            35, 3, 43, 11, 51, 19, 59, 27,
-            34, 2, 42, 10, 50, 18, 58, 26,
-            33, 1, 41, 9, 49, 17, 57, 25,
-            32, 0, 40, 8, 48, 16, 56, 24
-    };
-
-
     int[] masterkey;
-    int[][] tab_cles ;
+    int[][] tab_cles;
 
     public DES() {
         masterkey = genereMasterKey(64);
@@ -145,12 +138,24 @@ public class DES {
         this.tab_cles = tab_cles;
     }
 
+    public static void main(String[] args) {
+        DES des = new DES();
+        String msg = "Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.";
+        // String msg="bonjour a tres bientot ds le bus";
+        int[] msgcrypt = des.crypte(msg);
+        // print
+        System.out.println("msg : " + Arrays.toString(des.stringToBits(msg)));
+        System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
+        // Decrypt
+        System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
+    }
+
     public int[] crypte(String message_clair) {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
         int[] messageBinaire = stringToBits(message_clair);
         // Calcule la longueur du bourrage
         if (messageBinaire.length % 64 != 0) {
-            int paddingLength = 64 -(messageBinaire.length % 64);
+            int paddingLength = 64 - (messageBinaire.length % 64);
             int[] padding = new int[paddingLength];
 
             // Crée un nouveau tableau avec le bourrage inclus
@@ -161,17 +166,17 @@ public class DES {
         }
 
         // découpage en blocs de 64 bits
-        int[][] messagetab = decouppage(messageBinaire,64);
+        int[][] messagetab = decouppage(messageBinaire, 64);
         // Pour tout bloc de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
-            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            messagetab[i] = permutation(perm_initiale, messagetab[i]);
             // cryptage du bloc
             int[] blocG = decouppage(messagetab[i], 32)[0];
             int[] blocD = decouppage(messagetab[i], 32)[1];
             nb_ronde = 0;
             for (int y = 0; y < 16; y++) {
                 nb_ronde = y;
-                if (i==0){
+                if (i == 0) {
                     génèreClé(nb_ronde);
                 }
                 // Feistel function
@@ -185,17 +190,18 @@ public class DES {
             }
             messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
             // permutation P-1
-            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+            messagetab[i] = invPermutation(perm_initiale, messagetab[i]);
         }
         // return la table d'entiers
         return recollage_bloc(messagetab);
     }
+
     public int[] crypte(int[] message_clair) {
         // message_code transforme un message chaîne de caractères, en un tableau d’entiers (0 ou 1) résultat du cryptage
-        int[] messageBinaire = message_clair    ;
+        int[] messageBinaire = message_clair;
         // Calculate padding length
         if (messageBinaire.length % 64 != 0) {
-            int paddingLength = 64 -(messageBinaire.length % 64);
+            int paddingLength = 64 - (messageBinaire.length % 64);
             int[] padding = new int[paddingLength];
 
             // Create a new array with the padding included
@@ -206,17 +212,17 @@ public class DES {
         }
 
         // découpage en blocs de 64 bits
-        int[][] messagetab = decouppage(messageBinaire,64);
+        int[][] messagetab = decouppage(messageBinaire, 64);
         // for each blocs de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
-            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            messagetab[i] = permutation(perm_initiale, messagetab[i]);
             // cryptage du bloc
             int[] blocG = decouppage(messagetab[i], 32)[0];
             int[] blocD = decouppage(messagetab[i], 32)[1];
             nb_ronde = 0;
             for (int y = 0; y < 16; y++) {
                 nb_ronde = y;
-                if (i==0){
+                if (i == 0) {
                     génèreClé(nb_ronde);
                 }
                 // Feistel function
@@ -230,7 +236,7 @@ public class DES {
             }
             messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
             // permutation P-1
-            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+            messagetab[i] = invPermutation(perm_initiale, messagetab[i]);
         }
         // return the tab of int
         return recollage_bloc(messagetab);
@@ -238,16 +244,16 @@ public class DES {
 
     public String decrypte(int[] messageCodé) {
         //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
-        int[][] messagetab = decouppage(messageCodé,64);
+        int[][] messagetab = decouppage(messageCodé, 64);
         // Pour tout bloc de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
             // permutation initiale
-            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            messagetab[i] = permutation(perm_initiale, messagetab[i]);
             // cryptage du bloc
             int[] blocG = decouppage(messagetab[i], 32)[0];
             int[] blocD = decouppage(messagetab[i], 32)[1];
             nb_ronde = 15;
-            for (int y = 15; y >=0; y--) {
+            for (int y = 15; y >= 0; y--) {
                 nb_ronde = y;
                 // Feistel function
                 int[] fResult = functionF(blocG);
@@ -262,12 +268,12 @@ public class DES {
             }
             messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
             // permutation P-1
-            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+            messagetab[i] = invPermutation(perm_initiale, messagetab[i]);
         }
-        int[] result=recollage_bloc(messagetab);
+        int[] result = recollage_bloc(messagetab);
         // retire le bourrage
-        if (debourrage){
-            result=retireBourrage(result);
+        if (debourrage) {
+            result = retireBourrage(result);
         }
 
         // return le tableau d'entiers
@@ -277,16 +283,16 @@ public class DES {
 
     public int[] decrypteINT(int[] messageCodé) {
         //décrypte un tableau d’entiers (0 ou 1) résultat d’un cryptage en une chaîne de caractères donnat le message clair.
-        int[][] messagetab = decouppage(messageCodé,64);
+        int[][] messagetab = decouppage(messageCodé, 64);
         // Pour tout bloc de 64 bits
         for (int i = 0; i < messagetab.length; i++) {
             // permutation initiale
-            messagetab[i]= permutation(perm_initiale,messagetab[i]);
+            messagetab[i] = permutation(perm_initiale, messagetab[i]);
             // cryptage du bloc
             int[] blocG = decouppage(messagetab[i], 32)[0];
             int[] blocD = decouppage(messagetab[i], 32)[1];
             nb_ronde = 15;
-            for (int y = 15; y >=0; y--) {
+            for (int y = 15; y >= 0; y--) {
                 nb_ronde = y;
                 // Feistel function
                 int[] fResult = functionF(blocG);
@@ -301,12 +307,12 @@ public class DES {
             }
             messagetab[i] = recollage_bloc(new int[][]{blocG, blocD});
             // permutation P-1
-            messagetab[i]=invPermutation(perm_initiale,messagetab[i]);
+            messagetab[i] = invPermutation(perm_initiale, messagetab[i]);
         }
-        int[] result=recollage_bloc(messagetab);
+        int[] result = recollage_bloc(messagetab);
         // retire le bourrage
-        if (debourrage){
-            result=retireBourrage(result);
+        if (debourrage) {
+            result = retireBourrage(result);
         }
 
         // return le tableau d'entiers
@@ -397,7 +403,6 @@ public class DES {
         return MasterKey;
     }
 
-
     public int[] permutation(int[] tab_permutation, int[] bloc) {
         // Permutation d’un bloc d’entiers bloc selon le tableau d’entiers tab_permutation
         int[] bloc_permute = new int[tab_permutation.length];
@@ -435,7 +440,7 @@ public class DES {
     }
 
     public void génèreClé(int n) {
-        if (! this.genereCle) {
+        if (!this.genereCle) {
             return;
         }
         //calcule la clé de la n ième ronde, la stocke aussi dans tab_clés (pour le décryptage …)
@@ -459,15 +464,15 @@ public class DES {
         // Permutation avec pc2
         bloc_fusion = permutation(PC2, bloc_fusion);
         // Stockage de la clé dans tab_cles
-        tab_cles[n]=bloc_fusion;
+        tab_cles[n] = bloc_fusion;
     }
 
-    public int[] functionF(int[] unD){
+    public int[] functionF(int[] unD) {
         // Extension du bloc Dn de 32 bits en un bloc D’n de  48 bits, `a l’aide de la transformation E en r´ep´etant  certains bits :
         // Permutation avec E
         unD = permutation(E, unD);
         // xor avec la clé
-        unD=xor(unD, tab_cles[nb_ronde]);
+        unD = xor(unD, tab_cles[nb_ronde]);
         // Découpage en 8 blocs de 6 bits
         int[][] tab_blocs = decouppage(unD, 6);
         // Pour chaque bloc, on applique la fonction S
@@ -481,7 +486,7 @@ public class DES {
         return unD;
     }
 
-    public int[] functionS(int[] tab){
+    public int[] functionS(int[] tab) {
         // Fonction S
         // On récupère la ligne et la colonne
         int ligne = tab[0] * 2 + tab[5];
@@ -495,17 +500,5 @@ public class DES {
             valeur = valeur / 2;
         }
         return tab_valeur;
-    }
-
-    public static void main(String[] args) {
-        DES des = new DES();
-        String msg = "Toutes les connaissances que les hommes avaient mises sur Internet lui étaient accessibles. Les grandes bibliothèques du monde entier n’avaient plus de secret pour lui. Il pouvait apprendre très vite, beaucoup plus vite que n’importe quel humain. Il avait appris toutes les connaissances du monde entier, visité tous les pays. C’est lui qui avait fait en sorte qu’Internet se déploie ainsi. Il pouvait alors, à chaque fois qu’un nouvel ordinateur se connectait, approfondir son savoir, se connecter à une nouvelle caméra vidéo, ou même se connecter à des robots.";
-        // String msg="bonjour a tres bientot ds le bus";
-        int[] msgcrypt = des.crypte(msg);
-        // print
-        System.out.println("msg : " + Arrays.toString(des.stringToBits(msg)));
-        System.out.println("msgcrypt : " + Arrays.toString(msgcrypt));
-        // Decrypt
-        System.out.println("msgdecrypt : " + des.decrypte(msgcrypt));
     }
 }

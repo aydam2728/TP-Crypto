@@ -181,7 +181,7 @@ public class GUI extends javax.swing.JFrame {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text File", "txt");
         jFileChooser.addChoosableFileFilter(filter);
         int returnValue = jFileChooser.showOpenDialog(this);
-        if (returnValue == jFileChooser.APPROVE_OPTION) {
+        if (returnValue == JFileChooser.APPROVE_OPTION) {
             File selectedFile = jFileChooser.getSelectedFile();
             try {
                     // Read the content of the selected file
@@ -205,7 +205,7 @@ public class GUI extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
