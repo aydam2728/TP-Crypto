@@ -9,7 +9,6 @@ public class DES {
     boolean debourrage = false;
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
-
     boolean genereCle = true;
     int nb_ronde = 0;
     int[] tab_decalage = {1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2,2, 2, 2, 1};
