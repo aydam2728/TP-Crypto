@@ -46,7 +46,7 @@ public class DES {
             43, 48, 38, 55, 33, 52,
             45, 41, 49, 35, 28, 31
     };
-    boolean debourrage = false;
+    boolean retirerBourrage = false;
     int taille_bloc = 64;
     int taille_sous_bloc = 32;
     boolean genereCle = true;
@@ -272,12 +272,10 @@ public class DES {
         }
         int[] result = recollage_bloc(messagetab);
         // retire le bourrage
-        if (debourrage) {
+        if (retirerBourrage) {
             result = retireBourrage(result);
         }
 
-        // return le tableau d'entiers
-        System.out.println("result = " + Arrays.toString(result));
         return bitsToString(result);
     }
 
@@ -311,12 +309,10 @@ public class DES {
         }
         int[] result = recollage_bloc(messagetab);
         // retire le bourrage
-        if (debourrage) {
+        if (retirerBourrage) {
             result = retireBourrage(result);
         }
 
-        // return le tableau d'entiers
-        System.out.println("result = " + Arrays.toString(result));
         return result;
     }
 
