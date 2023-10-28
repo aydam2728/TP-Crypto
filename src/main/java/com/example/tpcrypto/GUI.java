@@ -1,14 +1,20 @@
 package com.example.tpcrypto;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import java.util.Arrays;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.ChangeEvent;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS;
 
 public class GUI {
     private static final JFrame frame = new JFrame("TP DES");
@@ -38,13 +44,26 @@ public class GUI {
 
     public static void main(String[] args) {
         frame.setSize(800, 500);
+        frame.setResizable(false);
 
+
+        try {
+            URL url = new URL("https://scontent-mrs2-1.xx.fbcdn.net/v/t39.30808-1/299787835_737344070555696_4445258482275812215_n.png?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=gnIyxMTdDlgAX973OcX&_nc_ht=scontent-mrs2-1.xx&oh=00_AfCkB4qK4rjMwouXbLc-iCCAah2ngtzZcMS94RKvRCSSFQ&oe=6541C4D0");
+            Image image = null;
+            image = ImageIO.read(url);
+            // convert to png
+            
+            frame.setIconImage(new ImageIcon(image).getImage());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         jFileChooser = new JFileChooser();
 
         setupStartPanel();
         setupCryptoPanel();
         startPanel.setForeground(Color.WHITE);
-        startPanel.setBackground(new Color(64, 68, 75));
+        startPanel.setBackground(new Color(76, 79, 83));
 
         mainPanel.add(startPanel, "StartPanel");
         JButton decryptButton = new JButton("Déchiffrer");
@@ -68,6 +87,21 @@ public class GUI {
         lblNewLabel_3.setBounds(10, 436, 764, 14);
         startPanel.add(lblNewLabel_3);
 
+        try {
+            URL url = new URL("https://scontent-mrs2-1.xx.fbcdn.net/v/t39.30808-1/299787835_737344070555696_4445258482275812215_n.png?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=gnIyxMTdDlgAX973OcX&_nc_ht=scontent-mrs2-1.xx&oh=00_AfCkB4qK4rjMwouXbLc-iCCAah2ngtzZcMS94RKvRCSSFQ&oe=6541C4D0");
+            BufferedImage imageurl = ImageIO.read(url);
+            ImageIcon imgIcon = new ImageIcon(imageurl);
+            Image image = imgIcon.getImage();
+            Image newimg = image.getScaledInstance(90, 90,  java.awt.Image.SCALE_SMOOTH);
+            JLabel imagePanel = new JLabel( new ImageIcon(newimg));
+            imagePanel.setBounds(166, 371, 90, 90);
+            startPanel.add(imagePanel);
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
         decryptButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // set type to decrypt
@@ -76,7 +110,7 @@ public class GUI {
                 cardLayout.show(mainPanel, "CryptoPanel");
             }
         });
-        cryptoPanel.setBackground(new Color(64, 68, 75));
+        cryptoPanel.setBackground(new Color(76, 79, 83));
         mainPanel.add(cryptoPanel, "CryptoPanel");
         cryptoPanel.setLayout(null);
 
@@ -121,18 +155,19 @@ public class GUI {
 
         textArea1 = new JTextArea();
         textArea1.setWrapStyleWord(true);
+        textArea1.setLineWrap(true);
         textArea1.setBounds(265, 50, 300, 150);
         cryptoPanel.add(textArea1);
 
         textArea2 = new JTextArea();
         textArea2.setEditable(false);
         textArea2.setWrapStyleWord(true);
+        textArea2.setLineWrap(true);
         textArea2.setBounds(265, 231, 300, 150);
         cryptoPanel.add(textArea2);
-
         JLabel lblNewLabel = new JLabel("OPTIONS :");
         lblNewLabel.setForeground(Color.WHITE);
-        lblNewLabel.setBounds(646, 30, 93, 32);
+        lblNewLabel.setBounds(648, 30, 93, 32);
         cryptoPanel.add(lblNewLabel);
 
         JSeparator separator = new JSeparator();
@@ -141,19 +176,19 @@ public class GUI {
 
         JCheckBox chckbxTripleDES = new JCheckBox("Triple DES");
         chckbxTripleDES.setForeground(Color.WHITE);
-        chckbxTripleDES.setBackground(new Color(64, 68, 75));
+        chckbxTripleDES.setBackground(new Color(76, 79, 83));
         chckbxTripleDES.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 tripleDESBool = chckbxTripleDES.isSelected();
             }
         });
-        chckbxTripleDES.setBounds(627, 85, 97, 23);
+        chckbxTripleDES.setBounds(627, 69, 97, 23);
         cryptoPanel.add(chckbxTripleDES);
 
         JCheckBox chckbxEnleverBourrage = new JCheckBox("Retirer le bourrage");
         chckbxEnleverBourrage.setForeground(Color.WHITE);
-        chckbxEnleverBourrage.setBackground(new Color(64, 68, 75));
-        chckbxEnleverBourrage.setBounds(626, 111, 131, 23);
+        chckbxEnleverBourrage.setBackground(new Color(76, 79, 83));
+        chckbxEnleverBourrage.setBounds(627, 95, 140, 23);
         chckbxEnleverBourrage.addChangeListener(new ChangeListener() {
             public void stateChanged(ChangeEvent e) {
                 enleverBourrage = chckbxEnleverBourrage.isSelected();
@@ -194,19 +229,23 @@ public class GUI {
             public void actionPerformed(ActionEvent e) {
                 des.retirerBourrage = enleverBourrage;
                 tripleDES.retirerBourrage = enleverBourrage;
-
+                // verif if textArea1 is not empty
+                if (textArea1.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(null, "Le texte est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
                 if (type) {
                     if (tripleDESBool) {
                         // encrypt
                         String plaintext = textArea1.getText();
                         int[] ciphertext = tripleDES.encrypt(plaintext);
-                        textArea2.setText(Arrays.toString(ciphertext));
-                        lblVerif.setText(tripleDES.decrypt(ciphertext));
+                        textArea2.setText(intToString(ciphertext));
+                        lblVerif.setText("Verification : " + tripleDES.decrypt(ciphertext));
                     } else {
                         // encrypt
                         String plaintext = textArea1.getText();
                         int[] ciphertext = des.crypte(plaintext);
-                        textArea2.setText(Arrays.toString(ciphertext));
+                        textArea2.setText(intToString(ciphertext));
                         lblVerif.setText("Verification : " + des.decrypte(ciphertext));
                     }
                 } else {
@@ -315,7 +354,6 @@ public class GUI {
     }
 
     private static void loadFileMenuMouseClicked(ActionEvent evt) {
-
         jFileChooser.setAcceptAllFileFilterUsed(false);
         FileNameExtensionFilter filter = new FileNameExtensionFilter("Text File", "txt");
         jFileChooser.addChoosableFileFilter(filter);
@@ -334,6 +372,8 @@ public class GUI {
 
                 // Set the content in a JTextArea
                 textArea1.setText(content.toString());
+                // remove the last \n
+                textArea1.setText(textArea1.getText().substring(0, textArea1.getText().length() - 1));
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -341,7 +381,18 @@ public class GUI {
         }
     }
     private static void saveFileMenuMouseClicked(ActionEvent evt) {
+        // verif if textArea2 is not empty
+        if (textArea2.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(null, "Le resultat est vide", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
         String text = textArea2.getText();
+
+        // filter text to remove brackets and commas
+        text = text.replace("[", "");
+        text = text.replace("]", "");
+        text = text.replace(",", "");
+        text = text.replace(" ", "");
 
         JFileChooser chooser = new JFileChooser();
         chooser.setAcceptAllFileFilterUsed(false);
@@ -352,7 +403,7 @@ public class GUI {
 
         if (result == JFileChooser.APPROVE_OPTION) {
             try {
-                File file = chooser.getSelectedFile();
+                File file = new File((chooser.getSelectedFile() + ".txt"));
                 FileWriter writer = new FileWriter(file);
                 writer.write(text);
                 writer.close();
@@ -362,4 +413,13 @@ public class GUI {
         }
     }
 
+    public static String intToString(int[] array){
+        String text = Arrays.toString(array);
+        // filter text to remove brackets and commas
+        text = text.replace("[", "");
+        text = text.replace("]", "");
+        text = text.replace(",", "");
+        text = text.replace(" ", "");
+        return text;
+    }
 }

@@ -11,7 +11,7 @@ public class TripleDES {
     int[][] tab_cles = new int[16][48];
 
     public TripleDES() {
-
+        genereCle();
     }
 
     public static void main(String[] args) {
@@ -26,14 +26,12 @@ public class TripleDES {
     }
 
     public int[] encrypt(String plaintext) {
-        genereCle();
         int[] encrypted1 = des1.crypte(plaintext);
         String decrypted1 = des2.decrypte(encrypted1);
         return des3.crypte(decrypted1);
     }
 
     public String decrypt(int[] ciphertext) {
-        genereCle();
         int[] decrypted1 = des3.decrypteINT(ciphertext);
         int[] encrypted1 = des2.crypte(decrypted1);
         return des1.decrypte(encrypted1);
